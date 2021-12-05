@@ -3,47 +3,62 @@
 #include <ctime>
 
 struct Person {
-  std::string namePeron = "Unknown";
-  int hp = 0;
-  int armor = 0;
-  int damage = 0;
+  std::string namePerson = "Unknown";
+  int hpPerson = 0;
+  int armorPerson = 0;
+  int damagePerson = 0;
 };
 
-void takeDamage(Person* p, int damage_received){
-  p->armor -= damage_received;
-  if(p->armor < 0){
-    p->hp += p->armor;
-    p->armor = 0;
+void creating_enemies(Person* p, int countEnumy){
+  for (int i = 1; i < countEnumy; i++) {
+    p[i].namePerson = ("Enumy #" + std::to_string(i));
+    p[i].hpPerson = rand() % 100 + 50;
+    p[i].armorPerson = rand() % 50;
+    p[i].damagePerson = rand() % 15 + 15;
   }
-};
+}
+
+void takeDamage(Person& p, int damage_received){
+  p.armorPerson -= damage_received;
+  if(p.armorPerson < 0){
+    p.hpPerson += p.armorPerson;
+    p.armorPerson = 0;
+  }
+}
 
 int main(){
   std::cout << "Role game" << std::endl;
-  Person pers;
-  int damagePeron = 0;
-  // std::vector<Person> persons;
+  int countEnumy = 6;
+  Person pers[countEnumy];
+  int damagePerson = 0;
+  std::string name;
+  int hp;
+  int armor;
+  int damage;
   srand(time(NULL));
+  std::cout << "Enter name, HP, armor, damage your person" << std::endl;
+  std::cin >> name;
+  std::cin >> hp;
+  std::cin >> armor;
+  std::cin >> damage;
 
-  for (int i = 0; i < 5; i++) {
-    pers.namePeron = ("Enumy #" + std::to_string(i+1));
-  pers.hp = rand() % 100 + 50;
-  
-  // // std::cout << pers.hp << std::endl;
+  pers[0].namePerson = name;
+  pers[0].hpPerson = hp;
+  pers[0].armorPerson = armor;
+  pers[0].damagePerson = damage;
 
-  pers.armor = rand() % 50;
-  // // std::cout << pers.armor << std::endl;
+  creating_enemies(pers, countEnumy);
+  // takeDamage(pers, damagePeron);
 
-  pers.damage = rand() % 15 + 15;
-  // persons.push_back({pers.hp, pers.armor, pers.damage});
-  // // std::cout << pers.damage << std::endl;
-  }
-  // takeDamage(&pers, damagePeron);
-  for(int i = 0; i < 5; i++) {
-    std::cout << "Name - " << pers.namePeron << std::endl;
-    std::cout << "HP - " << pers.hp << std::endl;
-    std::cout << "Armor - " << pers.armor << std::endl;
-    std::cout << "Damage - " << pers.damage << std::endl;
+
+
+  for(int i = 0; i < countEnumy; i++) {
+    std::cout << "Name - " << pers[i].namePerson << std::endl;
+    std::cout << "HP - " << pers[i].hpPerson << std::endl;
+    std::cout << "Armor - " << pers[i].armorPerson << std::endl;
+    std::cout << "Damage - " << pers[i].damagePerson << std::endl;
     std::cout << std::endl;
   }
+
   return 0;
 }

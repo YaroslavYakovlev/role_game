@@ -26,6 +26,17 @@ void takeDamage(Person& p, int damage_received){
   }
 }
 
+void field(){
+    // int columns = sizeof(field[0]) / sizeof(field[0][0]);
+    std::cout << std::endl;
+    for(int i = 0; i < 10; ++i){
+        for(int j = 0; j < 10; ++j){
+            std::cout << "." << " ";
+        }
+        std::cout << std::endl;
+    }
+}
+
 int main(){
   std::cout << "Role game" << std::endl;
   int countEnumy = 6;
@@ -48,6 +59,7 @@ int main(){
   pers[0].damagePerson = damage;
 
   creating_enemies(pers, countEnumy);
+  field();
   // takeDamage(pers, damagePeron);
 
 

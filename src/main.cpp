@@ -2,7 +2,7 @@
 #include <vector>
 #include <ctime>
 
-// #define HERO
+#define HERO
 #define PRINT
 
 const int col = 10;
@@ -49,14 +49,18 @@ void field(char _arena[row][col], std::vector<Person>& p){
             _arena[i][j] = '.';
               for(int k = 0; k < p.size(); k++){
                 _arena[p[k].X][p[k].Y] = 'E';
+                // _arena[p[k].X][p[k].Y] = 'P';
               }
             // _arena[_X][_Y] = 'P';
               std::cout << _arena[i][j] << " ";
           }
           std::cout << std::endl;
       }
-    std::cout << std::endl;
-    
+    std::cout << std::endl;    
+std::cout << "Size Person - " << p.size() << std::endl;
+      for(int i = 0; i < p.size(); i++){
+        std::cout << "p " << p[i].X << " " << p[i].Y <<std::endl;
+      }
 }
 
 int main(){
@@ -72,6 +76,8 @@ int main(){
   std::cin >> hero.hpPerson;
   std::cin >> hero.armorPerson;
   std::cin >> hero.damagePerson;
+  hero.X = rand() % 10 + 1;
+  hero.Y = rand() % 10 + 1;
   #endif 
   // coordinates(hero);
 
@@ -100,6 +106,8 @@ int main(){
     std::cout << "HP - " << hero.hpPerson << std::endl;
     std::cout << "Armor - " << hero.armorPerson << std::endl;
     std::cout << "Damage - " << hero.damagePerson << std::endl;
+    std::cout << "Coordinats X - " << hero.X << std::endl;
+    std::cout << "Coordinats Y - " << hero.Y << std::endl;
     std::cout << std::endl;
 #endif 
   return 0;

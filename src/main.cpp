@@ -42,7 +42,7 @@ void takeDamage(Person& p, int damage_received){
   }
 }
 
-void field(char _arena[row][col], std::vector<Person>& p){
+void field(char _arena[row][col], std::vector<Person>& p, Person& h){
     std::cout << std::endl;
       for(int i = 1; i <= row; ++i){
           for(int j = 1; j <= col; ++j){
@@ -51,7 +51,7 @@ void field(char _arena[row][col], std::vector<Person>& p){
                 _arena[p[k].X][p[k].Y] = 'E';
                 // _arena[p[k].X][p[k].Y] = 'P';
               }
-            // _arena[_X][_Y] = 'P';
+            _arena[h.X][h.Y] = 'P';
               std::cout << _arena[i][j] << " ";
           }
           std::cout << std::endl;
@@ -84,7 +84,7 @@ int main(){
   for (int i = 0; i < countEnumy; i++) {
     creating_enemies(pers, i);
   }
-  field(arena, pers);
+  field(arena, pers, hero);
 
   // takeDamage(pers, 10);
 

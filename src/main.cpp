@@ -3,7 +3,8 @@
 #include <ctime>
 
 #define HERO
-#define PRINT
+// #define PRINT_HERO
+// #define PRINT_ENUMY
 
 const int col = 10;
 const int row = 10; 
@@ -16,6 +17,13 @@ struct Person {
   int damagePerson = 0;
   int X = 0;
   int Y = 0;
+};
+
+struct Steps {
+  std::string left = "left";        // Лево
+  std::string right = "right";      // Право 
+  std::string top = "top";          // Вверх
+  std::string bottom  = "bottom";   // Низ
 };
 
 // void coordinates(std::vector<Person>& p){
@@ -31,7 +39,6 @@ void creating_enemies(std::vector<Person>& p, int i){
     p[i].damagePerson = rand() % 15 + 15;
     p[i].X = rand() % 10 + 1;
     p[i].Y = rand() % 10 + 1;
-    // coordinates();
 }
 
 void takeDamage(Person& p, int damage_received){
@@ -49,25 +56,22 @@ void field(char _arena[row][col], std::vector<Person>& p, Person& h){
             _arena[i][j] = '.';
               for(int k = 0; k < p.size(); k++){
                 _arena[p[k].X][p[k].Y] = 'E';
-                // _arena[p[k].X][p[k].Y] = 'P';
               }
             _arena[h.X][h.Y] = 'P';
               std::cout << _arena[i][j] << " ";
           }
           std::cout << std::endl;
       }
-    std::cout << std::endl;    
-std::cout << "Size Person - " << p.size() << std::endl;
-      for(int i = 0; i < p.size(); i++){
-        std::cout << "p " << p[i].X << " " << p[i].Y <<std::endl;
-      }
+    std::cout << std::endl;
 }
 
 int main(){
   std::cout << "Role game" << std::endl;
   const int countEnumy = 5;
+  std::string stepHero;
   std::vector<Person> pers(countEnumy);
   Person hero;
+  Steps step;
 
   srand(time(NULL));
   #ifdef HERO
@@ -79,7 +83,6 @@ int main(){
   hero.X = rand() % 10 + 1;
   hero.Y = rand() % 10 + 1;
   #endif 
-  // coordinates(hero);
 
   for (int i = 0; i < countEnumy; i++) {
     creating_enemies(pers, i);
@@ -87,9 +90,20 @@ int main(){
   field(arena, pers, hero);
 
   // takeDamage(pers, 10);
+  std::cout << "The hero walks" << std::endl; 
+  std::cin >> stepHero;
+  if(stepHero == step.top){
+    hero.X -= 1; 
+  }else if(stepHero == step.bottom){
+    hero.X += 1;
+  }else if(stepHero == step.left){
+    hero.Y -= 1;
+  }else if(stepHero == step.right){
+    hero.Y += 1;
+  }
+  field(arena, pers, hero);
 
-
-#ifdef PRINT
+#ifdef PRINT_ENUMY
   for(int i = 0; i < countEnumy; i++) {
     std::cout << "Name - " << pers[i].namePerson << std::endl;
     std::cout << "HP - " << pers[i].hpPerson << std::endl;
@@ -101,7 +115,7 @@ int main(){
     std::cout << std::endl;
   }
 #endif
-#ifdef HERO
+#ifdef  PRINT_HERO
     std::cout << "Name - " << hero.namePerson << std::endl;
     std::cout << "HP - " << hero.hpPerson << std::endl;
     std::cout << "Armor - " << hero.armorPerson << std::endl;

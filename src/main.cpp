@@ -8,7 +8,11 @@
 
 const int col = 10;
 const int row = 10; 
+const int countEnumy = 5;
 char arena[col][row];
+std::string steps[] = {"left", "right", "top", "bottom"};
+std::string word[countEnumy] = "";
+bool bFlag = false;
 
 struct Person {
   std::string namePerson = "Unknown";
@@ -55,19 +59,40 @@ void field(char _arena[row][col], std::vector<Person>& p, Person& h){
           for(int j = 1; j <= col; ++j){
             _arena[i][j] = '.';
               for(int k = 0; k < p.size(); k++){
+                if(bFlag){
+                  word[k] = steps[rand() % 4];
+                }
                 _arena[p[k].X][p[k].Y] = 'E';
+                if(!word[k].empty()){
+                  if(word[k] == "top"){
+                      p[k].X -= 1;
+                  }else if(word[k] == "bottom"){
+                      p[k].X += 1;
+                  }else if(word[k] == "left"){
+                      p[k].Y -= 1;
+                  }else if(word[k] == "right"){
+                      p[k].Y += 1;
+                  }
+                }
+                if(h.X <= row || h.Y <= col)
+                  _arena[h.X][h.Y] = 'P';
+                // if((h.X == p[k].X) && (h.Y == p[k].Y)){
+                //   std::cout << "GOOD" << std::endl;
+                // }
               }
-            _arena[h.X][h.Y] = 'P';
               std::cout << _arena[i][j] << " ";
           }
           std::cout << std::endl;
+      }
+      for(int f = 0; f < p.size(); f++){
+
+        std::cout << "Word - " << word[f] << std::endl;
       }
     std::cout << std::endl;
 }
 
 int main(){
   std::cout << "Role game" << std::endl;
-  const int countEnumy = 5;
   std::string stepHero;
   std::vector<Person> pers(countEnumy);
   Person hero;
@@ -83,25 +108,28 @@ int main(){
   hero.X = rand() % 10 + 1;
   hero.Y = rand() % 10 + 1;
   #endif 
-
   for (int i = 0; i < countEnumy; i++) {
     creating_enemies(pers, i);
   }
   field(arena, pers, hero);
 
   // takeDamage(pers, 10);
-  std::cout << "The hero walks" << std::endl; 
-  std::cin >> stepHero;
-  if(stepHero == step.top){
-    hero.X -= 1; 
-  }else if(stepHero == step.bottom){
-    hero.X += 1;
-  }else if(stepHero == step.left){
-    hero.Y -= 1;
-  }else if(stepHero == step.right){
-    hero.Y += 1;
+  while(countEnumy > 0 || hero.hpPerson > 0){
+    std::cout << "The hero walks" << std::endl; 
+    std::cin >> stepHero;
+    if(stepHero == step.top){
+      hero.X -= 1; 
+    }else if(stepHero == step.bottom){
+      hero.X += 1;
+    }else if(stepHero == step.left){
+      hero.Y -= 1;
+    }else if(stepHero == step.right){
+      hero.Y += 1;
+    }
+    // word = steps[rand() % 4];
+    bFlag = true;
+    field(arena, pers, hero);
   }
-  field(arena, pers, hero);
 
 #ifdef PRINT_ENUMY
   for(int i = 0; i < countEnumy; i++) {

@@ -40,16 +40,35 @@ void creating_enemies(std::vector<Person>& p, int i) {
   p[i].Y = rand() % 10 + 1;
 }
 
-void takeDamage(Person& p, int damage_received) {
-  p.armorPerson -= damage_received;
+// void takeDamage(Person& p, int damage_received) {
+//   p.armorPerson -= damage_received;
+//   if (p.armorPerson < 0) {
+//     p.hpPerson += p.armorPerson;
+//     p.armorPerson = 0;
+//   }
+// }
+
+void conflict(Person& p, Person& h) {
+  std::cout << "GOOD" << std::endl;
+  p.armorPerson -= h.damagePerson;
+  h.armorPerson -= p.damagePerson;
   if (p.armorPerson < 0) {
     p.hpPerson += p.armorPerson;
     p.armorPerson = 0;
   }
-}
-
-void conflict() {
-  std::cout << "GOOD" << std::endl;
+  if (h.armorPerson < 0) {
+    h.hpPerson += h.armorPerson;
+    h.armorPerson = 0;
+  }
+  // for (int i = 0; i < countEnumy; i++) {
+  for (int i = 1; i <= row; i++) {
+    for (int j = 1; j < col; j++) {
+      if (p.hpPerson < 0) {
+        arena[i][j] = '.';
+      }
+    }
+  }
+  // }
 }
 
 void field(char _arena[row][col], std::vector<Person>& p, Person& h) {
@@ -168,14 +187,15 @@ int main() {
     } else if (stepHero == step.right) {
       hero.Y += 1;
     }
-    /**
-     * * Закоментировал рабочий код (передвижение врагов)
-    for (int i = 0; i < countEnumy; i++)
-      enemy_move(pers, i);
-     */
+
+    for (int i = 0; i < pers.size(); i++) {
+      // enemy_move(pers, i);
+      if (bConflict) {
+        std::cout << "TEST" << std::endl;
+        conflict(pers[i], hero);
+      }
+    }
     field(arena, pers, hero);
-    if (bConflict)
-      conflict();
   }
 
 #ifdef PRINT_ENUMY

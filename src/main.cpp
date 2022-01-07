@@ -9,11 +9,13 @@
 
 const int col = 10;
 const int row = 10;
-const int countEnumy = 5;
+int countEnumy = 2;
 char arena[col][row];
 std::string steps[] = {"left", "right", "top", "bottom"};
 std::string word = "";
 bool bConflict = false;
+bool bDeadHero = false;
+bool bDeadEnumy = false;
 
 struct Person {
   std::string namePerson = "Unknown";
@@ -36,53 +38,49 @@ void creating_enemies(std::vector<Person>& p, int i) {
   p[i].hpPerson = rand() % 100 + 50;
   p[i].armorPerson = rand() % 51;
   p[i].damagePerson = rand() % 15 + 15;
-  p[i].X = rand() % 10 + 1;
-  p[i].Y = rand() % 10 + 1;
+  p[i].X = rand() % 9 + 0;
+  p[i].Y = rand() % 9 + 0;
 }
-
-// void takeDamage(Person& p, int damage_received) {
-//   p.armorPerson -= damage_received;
-//   if (p.armorPerson < 0) {
-//     p.hpPerson += p.armorPerson;
-//     p.armorPerson = 0;
-//   }
-// }
 
 void conflict(Person& p, Person& h) {
   std::cout << "GOOD" << std::endl;
   p.armorPerson -= h.damagePerson;
   h.armorPerson -= p.damagePerson;
   if (p.armorPerson < 0) {
+    std::cout << "conflict - 1" << std::endl;
     p.hpPerson += p.armorPerson;
     p.armorPerson = 0;
   }
   if (h.armorPerson < 0) {
+    std::cout << "conflict - 2" << std::endl;
     h.hpPerson += h.armorPerson;
     h.armorPerson = 0;
   }
-  // for (int i = 0; i < countEnumy; i++) {
-  for (int i = 1; i <= row; i++) {
-    for (int j = 1; j < col; j++) {
-      if (p.hpPerson < 0) {
-        arena[i][j] = '.';
-      }
-    }
+
+  if (p.hpPerson < 0) {
+    std::cout << "conflict - 3" << std::endl;
+    arena[p.X][p.Y] = '.';
+    countEnumy--;
+    if (countEnumy < 1)
+      bDeadEnumy = true;
+    std::cout << "arena[p.X][p.Y] " << arena[p.X][p.Y] << std::endl;
+  } else if (h.hpPerson < 0) {
+    std::cout << "conflict - 4" << std::endl;
+    arena[h.X][h.Y] = '.';
+    bDeadHero = true;
   }
-  // }
 }
 
-void field(char _arena[row][col], std::vector<Person>& p, Person& h) {
+void print_field(char _arena[row][col], std::vector<Person>& p, Person& h) {
   std::cout << std::endl;
-  for (int i = 1; i <= row; ++i) {
-    for (int j = 1; j <= col; ++j) {
+  for (int i = 0; i < row; ++i) {
+    for (int j = 0; j < col; ++j) {
       _arena[i][j] = '.';
       for (int k = 0; k < p.size(); k++) {
-        _arena[p[k].X][p[k].Y] = 'E';
-        if (h.X <= row || h.Y <= col)
+        if (p[k].X < row || p[k].Y < col)
+          _arena[p[k].X][p[k].Y] = 'E';
+        if (h.X < row || h.Y < col)
           _arena[h.X][h.Y] = 'P';
-        if ((h.X == p[k].X) && (h.Y == p[k].Y)) {
-          bConflict = true;
-        }
       }
       std::cout << _arena[i][j] << " ";
     }
@@ -90,7 +88,9 @@ void field(char _arena[row][col], std::vector<Person>& p, Person& h) {
   }
   std::cout << std::endl;
 }
-
+/**
+ * ? Выставление "." только на момент совпадене координат
+ **/
 void enemy_move(std::vector<Person>& p, int i) {
   word = steps[rand() % 4];
   if (word == "top") {
@@ -158,15 +158,15 @@ int main() {
   std::cin >> hero.hpPerson;
   std::cin >> hero.armorPerson;
   std::cin >> hero.damagePerson;
-  hero.X = rand() % 10 + 1;
-  hero.Y = rand() % 10 + 1;
+  hero.X = rand() % 9 + 0;
+  hero.Y = rand() % 9 + 0;
+
 #endif
   for (int i = 0; i < countEnumy; i++) {
     creating_enemies(pers, i);
   }
-  field(arena, pers, hero);
+  print_field(arena, pers, hero);
 
-  // takeDamage(pers, 10);
   while (countEnumy > 0 || hero.hpPerson > 0) {
     std::cout << "The hero walks" << std::endl;
     std::cin >> stepHero;
@@ -187,15 +187,28 @@ int main() {
     } else if (stepHero == step.right) {
       hero.Y += 1;
     }
-
     for (int i = 0; i < pers.size(); i++) {
+      /**
+       * ! Перемещение противников
       // enemy_move(pers, i);
-      if (bConflict) {
-        std::cout << "TEST" << std::endl;
+      **/
+
+      if ((hero.X == pers[i].X) && (hero.Y == pers[i].Y)) {
         conflict(pers[i], hero);
+        if (bDeadEnumy) {
+          std::cout << "All enemies killed, you won!" << std::endl;
+          return 0;
+        }
+        if (bDeadHero) {
+          std::cout << "Your hero died, you lost!" << std::endl;
+          return 0;
+        }
       }
+      std::cout << "p.X " << pers[i].X << " p.Y " << pers[i].Y << std::endl;
+      std::cout << "h.X " << hero.X << " h.Y " << hero.Y << std::endl;
+      std::cout << "arena[pers.X][pers.Y] " << arena[pers[i].X][pers[i].Y] << std::endl;
     }
-    field(arena, pers, hero);
+    print_field(arena, pers, hero);
   }
 
 #ifdef PRINT_ENUMY

@@ -16,6 +16,7 @@ std::string word = "";
 bool bConflict = false;
 bool bDeadHero = false;
 bool bDeadEnumy = false;
+bool bFlag = false;
 
 struct Person {
   std::string namePerson = "Unknown";
@@ -60,6 +61,7 @@ void conflict(Person& p, Person& h) {
   if (p.hpPerson < 0) {
     std::cout << "conflict - 3" << std::endl;
     arena[p.X][p.Y] = '.';
+    // bFlag = true;
     countEnumy--;
     if (countEnumy < 1)
       bDeadEnumy = true;
@@ -77,8 +79,14 @@ void print_field(char _arena[row][col], std::vector<Person>& p, Person& h) {
     for (int j = 0; j < col; ++j) {
       _arena[i][j] = '.';
       for (int k = 0; k < p.size(); k++) {
-        if (p[k].X < row || p[k].Y < col)
+        if (p[k].X < row || p[k].Y < col) {
+          // if (bFlag) {
+          //   _arena[p[k].X][p[k].Y] = '.';
+
+          //   bFlag = false;
+          // } else
           _arena[p[k].X][p[k].Y] = 'E';
+        }
         if (h.X < row || h.Y < col)
           _arena[h.X][h.Y] = 'P';
       }
@@ -207,6 +215,12 @@ int main() {
       std::cout << "p.X " << pers[i].X << " p.Y " << pers[i].Y << std::endl;
       std::cout << "h.X " << hero.X << " h.Y " << hero.Y << std::endl;
       std::cout << "arena[pers.X][pers.Y] " << arena[pers[i].X][pers[i].Y] << std::endl;
+      // if (bFlag) {
+      //   for (int i = 0; i < pers.size(); i++) {
+      //     arena[pers[i].X][pers[i].Y] = '.';
+      //     bFlag = false;
+      //   }
+      // }
     }
     print_field(arena, pers, hero);
   }

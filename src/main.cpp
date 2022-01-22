@@ -7,9 +7,9 @@
 // #define PRINT_HERO
 // #define PRINT_ENUMY
 
-const int col = 10;
-const int row = 10;
-int countEnumy = 2;
+const int col = 40;
+const int row = 40;
+int countEnumy = 5;
 char arena[col][row];
 std::string steps[] = {"left", "right", "top", "bottom"};
 std::string word = "";
@@ -60,8 +60,7 @@ void conflict(Person& p, Person& h) {
 
   if (p.hpPerson < 0) {
     std::cout << "conflict - 3" << std::endl;
-    arena[p.X][p.Y] = '.';
-    // bFlag = true;
+    bFlag = true;
     countEnumy--;
     if (countEnumy < 1)
       bDeadEnumy = true;
@@ -73,24 +72,24 @@ void conflict(Person& p, Person& h) {
   }
 }
 
-void print_field(char _arena[row][col], std::vector<Person>& p, Person& h) {
+void print_field(std::vector<Person>& p, Person& h) {
   std::cout << std::endl;
   for (int i = 0; i < row; ++i) {
     for (int j = 0; j < col; ++j) {
-      _arena[i][j] = '.';
+      arena[i][j] = '.';
       for (int k = 0; k < p.size(); k++) {
         if (p[k].X < row || p[k].Y < col) {
-          // if (bFlag) {
-          //   _arena[p[k].X][p[k].Y] = '.';
-
-          //   bFlag = false;
-          // } else
-          _arena[p[k].X][p[k].Y] = 'E';
+          if (bFlag) {
+            p.erase(p.begin() + k);
+            arena[p[k].X][p[k].Y] = '.';
+            bFlag = false;
+          } else
+            arena[p[k].X][p[k].Y] = 'E';
         }
         if (h.X < row || h.Y < col)
-          _arena[h.X][h.Y] = 'P';
+          arena[h.X][h.Y] = 'P';
       }
-      std::cout << _arena[i][j] << " ";
+      std::cout << arena[i][j] << " ";
     }
     std::cout << std::endl;
   }
@@ -173,7 +172,7 @@ int main() {
   for (int i = 0; i < countEnumy; i++) {
     creating_enemies(pers, i);
   }
-  print_field(arena, pers, hero);
+  print_field(pers, hero);
 
   while (countEnumy > 0 || hero.hpPerson > 0) {
     std::cout << "The hero walks" << std::endl;
@@ -198,8 +197,8 @@ int main() {
     for (int i = 0; i < pers.size(); i++) {
       /**
        * ! Перемещение противников
-      // enemy_move(pers, i);
-      **/
+       **/
+      enemy_move(pers, i);
 
       if ((hero.X == pers[i].X) && (hero.Y == pers[i].Y)) {
         conflict(pers[i], hero);
@@ -222,7 +221,7 @@ int main() {
       //   }
       // }
     }
-    print_field(arena, pers, hero);
+    print_field(pers, hero);
   }
 
 #ifdef PRINT_ENUMY

@@ -16,7 +16,6 @@ std::string word = "";
 bool bConflict = false;
 bool bDeadHero = false;
 bool bDeadEnumy = false;
-bool bFlag = false;
 
 struct Person {
   std::string namePerson = "Unknown";
@@ -39,8 +38,8 @@ void creating_enemies(std::vector<Person>& p, int i) {
   p[i].hpPerson = rand() % 100 + 50;
   p[i].armorPerson = rand() % 51;
   p[i].damagePerson = rand() % 15 + 15;
-  p[i].X = rand() % 9 + 0;
-  p[i].Y = rand() % 9 + 0;
+  p[i].X = rand() % 39 + 0;
+  p[i].Y = rand() % 39 + 0;
 }
 
 void conflict(Person& p, Person& h) {
@@ -60,7 +59,6 @@ void conflict(Person& p, Person& h) {
 
   if (p.hpPerson < 0) {
     std::cout << "conflict - 3" << std::endl;
-    bFlag = true;
     countEnumy--;
     if (countEnumy < 1)
       bDeadEnumy = true;
@@ -79,10 +77,9 @@ void print_field(std::vector<Person>& p, Person& h) {
       arena[i][j] = '.';
       for (int k = 0; k < p.size(); k++) {
         if (p[k].X < row || p[k].Y < col) {
-          if (bFlag) {
+          if (p[k].hpPerson < 0) {
             p.erase(p.begin() + k);
             arena[p[k].X][p[k].Y] = '.';
-            bFlag = false;
           } else
             arena[p[k].X][p[k].Y] = 'E';
         }
@@ -165,8 +162,8 @@ int main() {
   std::cin >> hero.hpPerson;
   std::cin >> hero.armorPerson;
   std::cin >> hero.damagePerson;
-  hero.X = rand() % 9 + 0;
-  hero.Y = rand() % 9 + 0;
+  hero.X = rand() % 39 + 0;
+  hero.Y = rand() % 39 + 0;
 
 #endif
   for (int i = 0; i < countEnumy; i++) {
@@ -182,8 +179,12 @@ int main() {
         save_progress(save, pers[i], hero);
       }
     else if (stepHero == "load")
-      for (int i = 0; i < countEnumy; i++) {
-        load_progress(load, pers[i], hero);
+      if (load) {
+        for (int i = 0; i < countEnumy; i++) {
+          load_progress(load, pers[i], hero);
+        }
+      } else {
+        std::cout << "File not found" << std::endl;
       }
     else if (stepHero == step.top) {
       hero.X -= 1;
@@ -197,8 +198,8 @@ int main() {
     for (int i = 0; i < pers.size(); i++) {
       /**
        * ! Перемещение противников
-       **/
       enemy_move(pers, i);
+       **/
 
       if ((hero.X == pers[i].X) && (hero.Y == pers[i].Y)) {
         conflict(pers[i], hero);
@@ -214,12 +215,6 @@ int main() {
       std::cout << "p.X " << pers[i].X << " p.Y " << pers[i].Y << std::endl;
       std::cout << "h.X " << hero.X << " h.Y " << hero.Y << std::endl;
       std::cout << "arena[pers.X][pers.Y] " << arena[pers[i].X][pers[i].Y] << std::endl;
-      // if (bFlag) {
-      //   for (int i = 0; i < pers.size(); i++) {
-      //     arena[pers[i].X][pers[i].Y] = '.';
-      //     bFlag = false;
-      //   }
-      // }
     }
     print_field(pers, hero);
   }
